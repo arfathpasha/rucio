@@ -733,7 +733,7 @@ def _retry_protocol_stat(protocol, pfn):
     :param protocol     The protocol to use to reach this file
     :param pfn          Physical file name of the target for the protocol stat
     """
-    retries = config_get('client', 'protocol_stat_retries', raise_exception=False, default=6)
+    retries = int(config_get('client', 'protocol_stat_retries', raise_exception=False, default=6))
 
     for attempt in range(retries):
         try:
