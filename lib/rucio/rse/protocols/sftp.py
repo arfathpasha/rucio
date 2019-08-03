@@ -27,6 +27,7 @@ import pysftp
 from subprocess import call
 
 from rucio.common import exception
+from rucio.common.config import get_rse_credentials
 from rucio.rse.protocols import protocol
 
 
@@ -63,6 +64,10 @@ class Default(protocol.RSEProtocol):
 
             :raises RSEAccessDenied: if no connection could be established.
         """
+
+        credentials = get_rse_credentials()
+        self.rse['credentials'] = credentials.get(self.rse['rse'])
+
         try:
             self.rse['credentials']['host'] = self.attributes['hostname']
             self.__connection = pysftp.Connection(**self.rse['credentials'])
@@ -120,6 +125,7 @@ class Default(protocol.RSEProtocol):
         else:
             sf = source
         try:
+            # >>>> todo: this requires some checking pfn2path(target) result looks wierd
             self.__connection.put(sf, self.pfn2path(target))
         except IOError as e:
             try:
